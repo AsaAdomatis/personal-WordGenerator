@@ -66,13 +66,19 @@ public class Pattern {
                     head.AddChild(node);
                     break;
                 case "(":
-                    if (head.Children.Length() > 0)
-                        PatternNode node = new PatternNode("()");
-                        head.AddChild(node);
-                        GenerateTree(head.Children[head.Children.Length() - 1], i, "(");
+                    PatternNode node = new PatternNode("()");
+                    head.AddChild(node);
+                    GenerateTree(head.Children[head.Children.Length() - 1], i, "(");
                     break;
                 case ")":
+                    return;
+                case "[":
+                    PatternNode node = new PatternNode("[]");
+                    head.AddChild(node);
+                    GenerateTree(head.Children[head.Children.Length() - 1], i, "[");
                     break;
+                case "]":
+                    return;
             }
         }
 
