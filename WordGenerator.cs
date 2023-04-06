@@ -11,16 +11,74 @@ public interface IConstraint
 {
     bool Test(string word);
 }
+
+public class PatternNode
+{
+    public string Value { get; set; }
+    public List<PatternNode> Children { get; set; }
+
+    public PatternNode(string value)
+    {
+        Value = value;
+        Children = new List<PatternNode>();
+    }
+
+    public void AddChild(PatternNode child)
+    {
+        Children.Add(child);
+    }
+
+    public void RemoveChild(PatternNode child)
+    {
+        Children.Remove(child);
+    }
+}
+
 // description: A class representing a the basic pattern for constructing a word
 //              based of a string like "0.5(<consonant>)<vowel><liquid>(<consonant><vowel>[0.5<liquid>/0.5<plosive>])" 
 //              for example.
 public class Pattern {
     public string raw { get; set; }
+
+    PatternNode _root;
+
+    
+
     public Pattern(string rawPattern) {
         raw = rawPattern;      
+        _root = new PatternNode("");
+
+        // generating the pattern tree
+        GenerateTree(_root, "");
+        
     }
 
-    public GenerateWord(List<Phone> phones)
+    private void GenerateTree(PatternNode head, int start, string from) {
+        for (int i = start; i < raw.Length(); i++) {
+            switch (raw[i]) {
+                case "<":
+                    string tag = "";
+                    while (raw[i] != ">") {
+                        tag += raw[i];
+                        i++;
+                    }
+                    PatternNode node = new PatternNode(tag);
+                    head.AddChild(node);
+                    break;
+                case "(":
+                    if (head.Children.Length() > 0)
+                        PatternNode node = new PatternNode("()");
+                        head.AddChild(node);
+                        GenerateTree(head.Children[head.Children.Length() - 1], i, "(");
+                    break;
+                case ")":
+                    break;
+            }
+        }
+
+    }
+
+    string GenerateFrom(List<Phone> phones)
     {
         
     }
